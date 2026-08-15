@@ -3,15 +3,19 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
-const {PrismaClient} = require('@prisma/client');
+const prisma = require('./prisma/prisma');
 
-const prisma = new PrismaClient();
+const passport = require('./auth/passport');
+
+const authRouter = require('./routes/auth');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use(
     session({
@@ -30,6 +34,11 @@ app.use(
         },
     })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/api/auth', authRouter);
 
 app.get('/api/health', (req, res) => {
     res.json({status: 'ok', time: new Date().toISOString()});
