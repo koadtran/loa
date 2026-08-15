@@ -4,3 +4,7 @@ node_modules/
 client/dist/
 *.log
 .DS_Store
+.claude/
+.windsurf/
+.agents/
+skills-lock.json
