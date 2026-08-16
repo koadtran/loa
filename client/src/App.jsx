@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Odin-Book</h1>
+      <h1>Loa</h1>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {health ? (
         <pre>{JSON.stringify(health, null, 2)}</pre>
