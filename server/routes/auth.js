@@ -14,8 +14,8 @@ router.post('/signup', async (req, res, next) => {
     if (password.length < 8) {
         return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
-    if (username.length < 3 || username.length > 30) {
-        return res.status(400).json({ error: 'Username must be 3-30 characters' });
+    if (username.length < 3 || username.length > 20) {
+        return res.status(400).json({ error: 'Username must be 3-20 characters' });
     }
 
     try {
@@ -34,15 +34,28 @@ router.post('/signup', async (req, res, next) => {
             res.status(201).json(user);
         });
     } catch (err) {
-        if (err.code === '`P2002`') {
+        if (err.code === 'P2002') {
             return res.status(409).json({error: 'Username already taken'});
         }
         next(err);
     }
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.json({id: req.user.id, username: req.user.username})
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(401).json({error: info?.message || 'Login failed'});
+        }
+        req.login(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            res.json(user);
+        });
+    })(req, res, next);
 });
 
 router.post('/logout', (req, res, next) => {

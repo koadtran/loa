@@ -44,6 +44,13 @@ app.get('/api/health', (req, res) => {
     res.json({status: 'ok', time: new Date().toISOString()});
 });
 
+app.use((err, req, res, next) => {
+    res.status(err.statusCode || 500).json({
+        status: err,
+        message: err.message || 'Internal Server Error',
+    });
+});
+
 if (process.env.NODE_ENV === 'production') {
     const clientDist = path.join(__dirname, '../client/dist');
     app.use(express.static(clientDist));
