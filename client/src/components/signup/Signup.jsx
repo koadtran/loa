@@ -58,7 +58,7 @@ function Signup() {
                         {error && <p className={styles.error}>{error}</p>}
                         {showMismatchWarning && <p className={styles.error}>Passwords do not match</p>}
                         <label htmlFor="username">Username</label>
-                        <input type="text" id="username" name="username" value={username} onChange={e => setUsername(e.target.value)}/>
+                        <input type="text" id="username" name="username" value={username} onChange={e => {setUsername(e.target.value); setError(null);}}/>
                         <label htmlFor="password">Password</label>
                         <input type="password" id="password" name="password" value={password} onChange={e => {setPassword(e.target.value); setError(null);}}/>
                         <label htmlFor="confirm-password">Confirm password</label>
