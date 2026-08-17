@@ -1,15 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router";
-import './index.css'
-import Feed from './components/feed/Feed';
+import './index.css';
+import {AuthProvider} from './context/useAuth';
+import Protected from './components/protected/Protected';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
 
 const router = createBrowserRouter([
   {
-    path: "/feed",
-    element: <Feed />,
+    path: "/",
+    element: <Protected />,
   },
   {
     path: "/login",
@@ -23,6 +24,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

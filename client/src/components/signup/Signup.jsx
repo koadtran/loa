@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router';
 import {Link} from 'react-router';
+import {useAuth} from '../../context/useAuth';
 import styles from './Signup.module.css';
 
 function Signup() {
@@ -10,6 +11,8 @@ function Signup() {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const {setUser} = useAuth();
 
     const passwordsMatch = password === confirmPassword;
     const showMismatchWarning = confirmPassword.length > 0 && !passwordsMatch;
@@ -36,8 +39,9 @@ function Signup() {
                 setError((await res.json()).error);
             } else {
                 const user = await res.json();
-                console.log("Log in:", user);
-                navigate('/feed');
+                setUser(user);
+                console.log("Logged in:", user.username);
+                navigate('/');
             }
         } catch (err) {
             setError('Network error');
