@@ -6,11 +6,20 @@ import {AuthProvider} from './context/useAuth';
 import Protected from './components/protected/Protected';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
+import Feed from './components/feed/Feed';
+import People from './components/people/People';
+import Account from './components/account/Account';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Protected />,
+    children: [
+      {index: true, element: <Feed />},
+      {path: '/feed', element: <Feed />},
+      {path: '/people', element: <People />},
+      {path: '/account', element: <Account />},
+    ],
   },
   {
     path: "/login",

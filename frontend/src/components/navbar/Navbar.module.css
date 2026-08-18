@@ -1,0 +1,81 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: max(100dvh, 340px);
+    padding: var(--space-3) var(--space-2);
+    position: relative;
+    background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    gap: var(--space-2);
+    width: 72px;
+    min-width: 72px;
+    transition: width var(--transition);
+    overflow: hidden;
+}
+
+.container:hover {
+    width: 210px;
+    min-width: 210px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-2);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.option:hover {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.buttonName {
+    white-space: nowrap;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity var(--transition-fast), max-width var(--transition);
+}
+
+.container:hover .buttonName {
+    opacity: 1;
+    max-width: 200px;
+}
+
+.logout {
+    position: absolute;
+    bottom: var(--space-2);
+    left: var(--space-2);
+    width: calc(100% - 2 * var(--space-2));
+    color: var(--color-danger);
+}
+
+.logout:hover {
+    color: var(--color-danger)
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    flex-shrink: 0;
+    fill: var(--color-text-muted);
+    stroke-width: 300;
+}
+
+.option:hover .icon {
+    fill: var(--color-text);
+}
+
+.logout .icon,
+.logout:hover .icon {
+    fill: var(--color-danger);
+}

@@ -1,6 +1,8 @@
 import {useAuth} from '../../context/useAuth';
 import {Navigate} from 'react-router';
+import {Outlet} from 'react-router';
 import Feed from '../feed/Feed';
+import Home from '../home/Home';
 
 function Protected() {
     const {user, loading} = useAuth();
@@ -13,7 +15,7 @@ function Protected() {
         return <Navigate to='/login' replace/>;
     }
 
-    return <Feed />;
+    return <Home><Outlet /></Home>;
 }
 
 export default Protected;

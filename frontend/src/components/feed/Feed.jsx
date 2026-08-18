@@ -1,11 +1,13 @@
 import {useState} from 'react';
 import {useEffect} from 'react';
 import {useNavigate} from 'react-router';
-
 import Post from '../post/Post';
+import NewPost from '../newpost/NewPost';
+import styles from './Feed.module.css';
 
 export default function Feed() {
     const [posts, setPosts] = useState(null);
+    const [newPost, setNewPost] = useState(false);
     const navigate = useNavigate();
 
     async function fetchPosts() {
@@ -20,6 +22,7 @@ export default function Feed() {
                 return
             }
             const postsArr = await res.json();
+            setNewPost(false);
             setPosts(postsArr);
             
         } catch (err) {
@@ -27,29 +30,14 @@ export default function Feed() {
         }
     }
 
-    useEffect(() => {fetchPosts()},[]);
-
-    async function handleLogout(e) {
-        try {
-            const res = await fetch('/api/auth/logout', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-            });
-            if (!res.ok) {
-                console.log((await res.json()).status);
-            } else {
-                navigate('/login');
-            }
-        } catch (err) {
-            console.log('Network error');
-        }
-    }
+    useEffect(() => {fetchPosts()},[newPost]);
 
     return (
-        <>    
-            {posts && <ul>{posts.map(post => <li key={post.id}><Post post={post}/></li>)}</ul>}
-            <button onClick={handleLogout}>Log out</button>
-        </>
+        <div className={styles.container}>    
+            {posts && <ul className={styles.list}>
+                <NewPost postNew={setNewPost} />
+                {posts.map(post => <li key={post.id}><Post post={post}/></li>)}
+            </ul>}
+        </div>
     )
 }

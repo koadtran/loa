@@ -10,7 +10,7 @@ router.get('/', async (req, res, next) => {
     try {
         const posts = await prisma.post.findMany({
             orderBy: {createdAt: 'desc'},
-            take: 10,
+            take: 50,
             select: {
                 id: true,
                 content: true,
@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
     try {
         const post = await prisma.post.create({
             data: {
-                content: req.body.content,
+                content: req.body.content.trim(),
                 authorId: req.user.id,
             },
         });

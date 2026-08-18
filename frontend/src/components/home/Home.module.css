@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    min-height: 100dvh;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.children {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
