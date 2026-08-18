@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix backend\"",
     "start": "node server/server.js",
-    "build": "npm install --include=dev --prefix client && npm run build --prefix client && npm install --include=dev --prefix server && npx prisma@6 generate --schema server/prisma/schema.prisma && npx prisma@6 migrate deploy --schema server/prisma/schema.prisma"
+    "build": "npm install --include=dev --prefix backend && npm run build --prefix backend && npm install --include=dev --prefix server && npx prisma@6 generate --schema server/prisma/schema.prisma && npx prisma@6 migrate deploy --schema server/prisma/schema.prisma"
   },
   "devDependencies": {
     "concurrently": "^10.0.4"
