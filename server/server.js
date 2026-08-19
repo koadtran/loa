@@ -8,7 +8,8 @@ const prisma = require('./prisma/prisma');
 const passport = require('./auth/passport');
 
 const authRouter = require('./routes/auth');
-const postsRouter = require('./routes/posts')
+const postsRouter = require('./routes/posts');
+const usersRouter = require('./routes/users');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,6 +42,7 @@ app.use(passport.session());
 
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postsRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/api/health', (req, res) => {
     res.json({status: 'ok', time: new Date().toISOString()});

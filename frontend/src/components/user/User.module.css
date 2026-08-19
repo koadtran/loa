@@ -1,0 +1,75 @@
+.container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100dvh;
+    width: 100%;
+    padding: var(--space-3) var(--space-2);
+    max-width: 800px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    list-style-type: none;
+}
+
+.nameContainer {
+    container-type: inline-size;
+    width: 100%;
+    overflow: hidden;
+}
+
+.nametag {
+    display: block;
+    font-size: clamp(1rem, 12cqw, 4rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-text-muted);
+    font-weight: 1500;
+}
+
+.nametag {
+    text-align: center;
+    font-size: clamp(1.5rem, 10vw, 8rem); 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.stats {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-3);
+}
+
+.number {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text-muted);
+}
+
+/* .nameContainer {
+    padding: var(--space-2);
+    width: 100%;
+    max-width: 800px;
+}
+
+.nameContainer svg {
+    width: 100%;
+    height: auto;
+}
+
+.nameContainer text {
+    width: 100%;
+    font-weight: bold;
+    fill: #000000;
+} */

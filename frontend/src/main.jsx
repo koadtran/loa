@@ -8,7 +8,7 @@ import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
 import Feed from './components/feed/Feed';
 import People from './components/people/People';
-import Account from './components/account/Account';
+import User from './components/user/User';
 
 const router = createBrowserRouter([
   {
@@ -18,7 +18,8 @@ const router = createBrowserRouter([
       {index: true, element: <Feed />},
       {path: '/feed', element: <Feed />},
       {path: '/people', element: <People />},
-      {path: '/account', element: <Account />},
+      {path: '/user', element: <User />},
+      {path: '/user/:username', element: <User />},
     ],
   },
   {

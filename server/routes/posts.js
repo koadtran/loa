@@ -6,18 +6,18 @@ const router = express.Router();
 
 router.use(requireAuth);
 
-router.get('/', async (req, res, next) => {
+router.get('/{:username}', async (req, res, next) => {
     try {
         const posts = await prisma.post.findMany({
-            orderBy: {createdAt: 'desc'},
-            take: 50,
-            select: {
-                id: true,
-                content: true,
-                createdAt: true,
-                author: {select: { id: true, username: true}},
-                _count: {select: {likes: true, comments: true}}
-            }
+                orderBy: {createdAt: 'desc'},
+                take: 50,
+                select: {
+                    id: true,
+                    content: true,
+                    createdAt: true,
+                    author: {select: { id: true, username: true}},
+                    _count: {select: {likes: true, comments: true}}
+                }
         });
         res.json(posts);
     } catch (err) {
@@ -25,6 +25,7 @@ router.get('/', async (req, res, next) => {
         next(err);
     }
 });
+
 router.post('/', async (req, res, next) => {
     try {
         const post = await prisma.post.create({
