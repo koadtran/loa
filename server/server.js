@@ -57,7 +57,7 @@ app.use((err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV === 'production') {
-    const dist = path.join(__dirname, '../client/dist');
+    const dist = path.join(__dirname, '../frontend/dist');
     app.use(express.static(dist));
     app.get('/*splat', (req, res) => {
         res.sendFile(path.join(dist, "index.html"));
