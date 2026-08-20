@@ -19,9 +19,10 @@ export default function Feed() {
             })
             if (res.status === 401) {
                 navigate('/login');
-                return
+                return;
             }
             const postsArr = await res.json();
+            console.log(postsArr);
             setNewPost(false);
             setPosts(postsArr);
         } catch (err) {

@@ -70,3 +70,7 @@
 .action:hover .icon {
     fill: var(--color-primary);
 }
+
+.icon.liked {
+    fill: #f91880;
+}

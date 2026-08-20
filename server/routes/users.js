@@ -65,16 +65,27 @@ router.get('/:username', async (req, res, next) => {
                         content: true,
                         createdAt: true,
                         author: {select: {id: true, username: true}},
-                        _count: {select: {likes: true, comments: true}}
-                    }
+                        _count: {select: {likes: true, comments: true}},
+                        likes: {
+                            where: {authorId: req.user.id},
+                            select: {authorId: true}
+                        },
+                    },
                 } : false,
                 _count: {select: {followers: true, following: true, posts: true}},
             }
         });
 
+        const postsWithLiked = (user.posts ?? []).map(post => {
+            return {
+                ...post,
+                liked: post.likes.length > 0,
+            }
+        });
+
         res.json({
             ...user,
-            posts: user.posts ?? [],
+            posts: postsWithLiked,
             followed: isFollowing,
         });
     } catch (err) {
