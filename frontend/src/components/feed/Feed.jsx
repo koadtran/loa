@@ -24,9 +24,8 @@ export default function Feed() {
             const postsArr = await res.json();
             setNewPost(false);
             setPosts(postsArr);
-            
         } catch (err) {
-            console.log('Network error');
+            console.log(err);
         }
     }
 

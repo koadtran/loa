@@ -20,7 +20,7 @@ function Navbar() {
                 navigate('/login');
             }
         } catch (err) {
-            console.log('Network error');
+            console.log(err);
         }
     }
 

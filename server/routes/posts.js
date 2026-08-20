@@ -6,9 +6,15 @@ const router = express.Router();
 
 router.use(requireAuth);
 
-router.get('/{:username}', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     try {
         const posts = await prisma.post.findMany({
+                where: {
+                    OR: [
+                        {authorId: req.user.id},
+                        {author: {followers: {some: {followerId: req.user.id}}}}
+                    ]
+                },
                 orderBy: {createdAt: 'desc'},
                 take: 50,
                 select: {

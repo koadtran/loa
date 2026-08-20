@@ -5,7 +5,6 @@ import styles from "./NewPost.module.css";
 function NewPost({postNew}) {
     const [content, setContent] = useState('');
     const [posting, setPosting] = useState(false);
-    const [error, setError] = useState(null);
     const {user} = useAuth();
 
     async function handleSubmit(e) {
@@ -23,8 +22,8 @@ function NewPost({postNew}) {
             } else {
                 postNew(true);
             }
-        } catch {
-            setError('Network error');
+        } catch (err) {
+            console.log(err);
         } finally {
             setContent('');
             setPosting(false);

@@ -1,3 +1,4 @@
+import {useNavigate} from 'react-router';
 import styles from './Post.module.css';
 
 function formatTimeAgo(dateString) {
@@ -13,6 +14,7 @@ function formatTimeAgo(dateString) {
 }
 
 function Post(props) {
+    const navigate = useNavigate();
     const {post} = props;
     const {author, createdAt, content, _count } = post;
 
@@ -21,7 +23,7 @@ function Post(props) {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <p className={styles.author}>{author.username}</p>
+                <p className={styles.author} onClick={() => navigate(`/user/${author.username}`)}>{author.username}</p>
                 <p className={styles.timestamp}>{timeAgo}</p>
             </div>
             <p className={styles.content}>{content}</p>

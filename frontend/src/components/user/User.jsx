@@ -7,6 +7,7 @@ import styles from './User.module.css';
 
 function User() {
     const [user, setUser] = useState(null);
+    const [followed, setFollowed] = useState(false);
     const {user: currentUser} = useAuth();
     let {username} = useParams();
 
@@ -14,15 +15,53 @@ function User() {
         username = currentUser?.username;
     }
 
+    async function handleFollow(){
+        try {
+            const res = await fetch(`/api/users/${user.username}/follow`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+            });
+            if (!res.ok) {
+                return;
+            }
+            setFollowed(true);
+            fetchUser();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async function handleUnfollow(){
+        try {
+            const res = await fetch(`/api/users/${user.username}/follow`, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+            });
+            if (!res.ok) {
+                return;
+            }
+            setFollowed(false);
+            fetchUser();
+        } catch (err) {
+            console.log(err);
+        }
+    } 
+
+    const handleClick = followed ? handleUnfollow : handleFollow;
+
     async function fetchUser() {
         try {
             const res = await fetch(`/api/users/${username}`, {credentials: 'include'});
             if (res.status === 401) {
                 return;
             }
-            setUser(await res.json());
+            const user = await res.json();
+            setUser(user);
+            setFollowed(user.followed);
         } catch (err) {
-            console.log('Network error');
+            console.log(err);
         }
     }
 
@@ -46,6 +85,7 @@ function User() {
                             <p>{user._count.following}</p>
                         </div>
                     </div>
+                    {(user.username !== currentUser.username) && <button className={`${styles.button} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? `Unfollow ${user.username}` : `Follow ${user.username}`}</button>}
                     <ul className={styles.list}>
                         {user.posts.map(post => <li key={post.id}><Post post={post}/></li>)}
                     </ul>

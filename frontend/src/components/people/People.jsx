@@ -6,7 +6,16 @@ import styles from './People.module.css';
 
 function People() {
     const [people, setPeople] = useState(null);
-    const currentUsername = useAuth().user.username;
+    const {user} = useAuth();
+    const currentUsername = user?.username;
+
+    function handleFollowChange(username, state) {
+        setPeople( prev =>
+            prev.map(person => 
+                (person.username === username) ? {...person, followed: state} : person
+            )
+        );
+    } 
 
     async function fetchPeople() {
         try {
@@ -16,7 +25,7 @@ function People() {
             }
             setPeople(await res.json());
         } catch (err) {
-            console.log('Network error');
+            console.log(err);
         }
     }
 
@@ -26,14 +35,7 @@ function People() {
         <div className={`${styles.container} ${styles.hideScrollbar}`}>
             {people && <>
                     <ul className={styles.list}>
-                        {people.map(person => {
-                            console.log(person.username);
-                            console.log(person.username !== currentUsername);
-                            return (person.username !== currentUsername) ? 
-                                <li key={person.id}><UserCard user={person} /></li> 
-                            : 
-                            <></>
-                        })}
+                        {people.filter(person => person.username !== currentUsername).map(person => <li key={person.id}><UserCard user={person} handleFollowChange={handleFollowChange} /></li> )}
                     </ul>
                 </>
             }
