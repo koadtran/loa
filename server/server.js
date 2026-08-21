@@ -50,6 +50,7 @@ app.get('/api/health', (req, res) => {
 
 app.use((err, req, res, next) => {
     console.log("Error middleware")
+    console.log(err);
     res.status(err.statusCode || 500).json({
         status: err,
         message: err.message || 'Internal Server Error',

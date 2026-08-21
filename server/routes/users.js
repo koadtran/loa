@@ -70,6 +70,14 @@ router.get('/:username', async (req, res, next) => {
                             where: {authorId: req.user.id},
                             select: {authorId: true}
                         },
+                        comments: {
+                            select: {
+                                author: {select: {id: true, username: true}},
+                                content: true,
+                                createdAt: true,
+                                id: true
+                            },
+                        },
                     },
                 } : false,
                 _count: {select: {followers: true, following: true, posts: true}},

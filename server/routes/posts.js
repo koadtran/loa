@@ -28,7 +28,14 @@ router.get('/', async (req, res, next) => {
                             author: {select: {id: true, username: true}}
                         }
                     },
-                    comments: {select: {author: {select: {id: true, username: true}}}},
+                    comments: {
+                        select: {
+                            author: {select: {id: true, username: true}},
+                            content: true,
+                            createdAt: true,
+                            id: true
+                        }
+                    },
                     _count: {select: {likes: true, comments: true}}
                 }
         });
@@ -89,6 +96,29 @@ router.delete('/:id/like', async (req, res, next) => {
             }
         })
         res.json({ ok: true });
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
+
+router.post('/:id/comments', async (req, res, next) => {
+    try {
+        const postId = parseInt(req.params.id);
+        const newComment = await prisma.comment.create({
+            data: {
+                content: req.body.content,
+                authorId: req.user.id,
+                postId: postId
+            },
+            select: {
+                createdAt: true,
+                author: {select: {username: true, id: true}},
+                content: true,
+                id: true
+            }
+        });
+        res.json(newComment);
     } catch (err) {
         console.log(err);
         next(err);
