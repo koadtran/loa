@@ -9,6 +9,8 @@
     gap: var(--space-2);
     transition: border-color var(--transition-fast);
     cursor: pointer;
+    width: 100%;
+    max-width: 800px;
 }
 
 .userCard:hover {

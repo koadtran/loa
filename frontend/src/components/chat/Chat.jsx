@@ -5,15 +5,22 @@ import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import {useOutletContext} from 'react-router';
 import {useAuth} from '../../context/useAuth';
+import {io} from 'socket.io-client';
 import formatTimeAgo from '../../utils/formatTimeAgo';
 import styles from './Chat.module.css';
 
 function Chat() {
     const {id} = useParams();
-    const {onNewMessage} = useOutletContext();
+    const {onNewMessage, conversations} = useOutletContext();
     const {user: currentUser} = useAuth();
+    const currentConversation = conversations?.find(conv => conv.id === parseInt(id));
+    const participants = currentConversation
+        ? currentConversation.participants
+            .filter(p => p.user.id !== currentUser.id)
+            .map(p => `@${p.user.username}`)
+            .join(', ')
+        : null;
     const navigate = useNavigate();
-
     const [messages, setMessages] = useState(null);
     const [content, setContent] = useState("");
     const bottomRef = useRef(null);
@@ -47,6 +54,25 @@ function Chat() {
         fetchMessages();
     }, [id]);
 
+    useEffect(() => {
+        const socket = io();
+        socket.emit('join-conversation', id);
+
+        socket.on('new-message', (message) => {
+            if (message.conversationId !== parseInt(id)) {
+                return;
+            }
+            if (message.sender.id === currentUser.id) {
+                return;
+            }
+            setMessages(prev => [...prev, message]);
+            onNewMessage(parseInt(id), message);
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, [id]);
+
     async function handleSubmit(e) {
         e.preventDefault();
         const trimmed = content.trim();
@@ -74,6 +100,9 @@ function Chat() {
 
     return (
         <div className={styles.container}>
+            {participants && <div className={styles.header}>
+                <p className={styles.names}>{participants}</p>
+            </div>}
             <ul className={`${styles.messageList} ${styles.hideScrollbar}`}>
                 {messages && messages.map(message => {
                     const isOwn = message.sender.id === currentUser.id;

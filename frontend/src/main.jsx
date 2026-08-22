@@ -11,6 +11,7 @@ import People from './components/people/People';
 import Messages from './components/messages/Messages';
 import Chat from './components/chat/Chat';
 import User from './components/user/User';
+import NotFound from './components/not-found/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       },
       {path: 'user', element: <User />},
       {path: 'user/:username', element: <User />},
+      {path: '*', element: <NotFound />},
     ],
   },
   {
@@ -43,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
+  },
+  { 
+    path: '*', 
+    element: <NotFound /> 
   },
 ]);
 

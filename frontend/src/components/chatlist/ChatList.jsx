@@ -8,7 +8,10 @@ function ChatList({conversations}) {
     const {user: currentUser} = useAuth();
     return (
         <div className={`${styles.container} ${styles.hideScrollbar}`}>
-            {conversations && (
+            {conversations && conversations.length === 0 && (
+                <p className={styles.empty}>No conversations yet. Visit someone's profile to start one.</p>
+            )}
+            {conversations && conversations.length > 0 && (
                 <ul className={styles.list}>
                     {conversations.map(conversation => {
                         const lastMessage = conversation.messages[0];

@@ -7,6 +7,7 @@ import styles from './Messages.module.css';
 
 function Messages() {
     const [conversations, setConversations] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     
     async function fetchConversations() {
@@ -22,27 +23,39 @@ function Messages() {
             setConversations(await res.json());
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {fetchConversations()}, []);
 
     function handleNewMessage(conversationId, message) {
-        setConversations(prev => 
-            prev.map(conversation => 
-                (conversation.id === conversationId)
-                ? {...conversation, messages: [message]}
-                : conversation
-            ) 
-        );
+        setConversations(prev => {
+            let hasNewMessage;
+            const filtered = prev.filter(conversation => {
+                if (conversation.id !== conversationId) {
+                    return true;
+                } else {
+                    hasNewMessage = {
+                        ...conversation,
+                        messages: [message]
+                    }
+                    return false;
+                }
+            });
+            return [hasNewMessage, ...filtered]
+        })
     }
+
     return (
         <div className={styles.container}>
             <div className={styles.chatlist}>
-                <ChatList conversations={conversations} />
+                {loading && <p className={styles.loading}>Loading…</p>}
+                {!loading && <ChatList conversations={conversations} />}
             </div>
             <div className={styles.chat}>
-                <Outlet context={{onNewMessage: handleNewMessage}}/>
+                <Outlet context={{onNewMessage: handleNewMessage, conversations}}/>
             </div>
         </div>
     )
