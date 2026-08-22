@@ -57,7 +57,8 @@
     color: var(--color-text-muted);
 }
 
-.button {
+.followbutton,
+.messagebutton {
     width: 100%;
     font-size: var(--text-sm);
     background-color: var(--color-primary);
@@ -67,13 +68,23 @@
     margin-bottom: var(--space-4);
 }
 
-.button:hover {
+.followbutton:hover {
     background-color: var(--color-primary-hover);
 }
 
-.button.unfollow {
+.followbutton.unfollow {
     background-color: var(--color-surface);
     color: var(--color-danger);
+}
+
+.buttons {
+    display: flex;
+    gap: var(--space-2)
+}
+
+.messagebutton {
+    background-color: var(--color-surface);
+    color:  var(--color-text);
 }
 
 /* .nameContainer {
@@ -92,3 +103,4 @@
     font-weight: bold;
     fill: #000000;
 } */
+

@@ -43,8 +43,8 @@ function UserCard({user, handleFollowChange}) {
     const handleClick = followed ? handleUnfollow : handleFollow;
 
     return (
-        <div className={styles.userCard} >
-            <p>{`@${user.username}`}</p>
+        <div className={styles.userCard}>
+            <p onClick={() => navigate(`/user/${user.username}`)}>{`@${user.username}`}</p>
             <button className={`${styles.button} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? 'Unfollow' : 'Follow'}</button>
         </div>
     )

@@ -30,12 +30,12 @@ export default function Feed() {
         }
     }
 
-    useEffect(() => {fetchPosts()},[newPost]);
+    useEffect(() => {fetchPosts()},[]);
 
     return (
         <div className={`${styles.container} ${styles.hideScrollbar}`}>    
             {posts && <ul className={styles.list}>
-                <NewPost postNew={setNewPost} />
+                <NewPost setPosts={setPosts} />
                 {posts.map(post => <li key={post.id}><Post post={post}/></li>)}
             </ul>}
         </div>
