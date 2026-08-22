@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.messageList {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    overflow-y: auto;
+    list-style: none;
+}
+
+.bubbleRow {
+    display: flex;
+}
+
+.own {
+    justify-content: flex-end;
+}
+
+.other {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 65%;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.own .bubble {
+    background-color: var(--color-primary);
+    color: white;
+    border-bottom-right-radius: var(--radius-sm);
+}
+
+.other .bubble {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    border-bottom-left-radius: var(--radius-sm);
+}
+
+.messageContent {
+    margin: 0;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.timestamp {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    align-self: flex-end;
+}
+
+.form {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-end;
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.input {
+    flex: 1;
+    max-height: 140px;
+    field-sizing: content;
+    resize: none;
+    padding: var(--space-2) var(--space-3);
+    font: inherit;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    field-sizing: content;
+    transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.sendButton {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: white;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.sendButton:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+}
+
+.sendButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}

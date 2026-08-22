@@ -9,35 +9,35 @@ router.use(requireAuth);
 router.get('/', async (req, res, next) => {
     try {
         const posts = await prisma.post.findMany({
-                where: {
-                    OR: [
-                        {authorId: req.user.id},
-                        {author: {followers: {some: {followerId: req.user.id}}}}
-                    ]
+            where: {
+                OR: [
+                    {authorId: req.user.id},
+                    {author: {followers: {some: {followerId: req.user.id}}}}
+                ]
+            },
+            orderBy: {createdAt: 'desc'},
+            take: 50,
+            select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {select: { id: true, username: true}},
+                likes: {
+                    where: {authorId: req.user.id},
+                    select: {
+                        author: {select: {id: true, username: true}}
+                    }
                 },
-                orderBy: {createdAt: 'desc'},
-                take: 50,
-                select: {
-                    id: true,
-                    content: true,
-                    createdAt: true,
-                    author: {select: { id: true, username: true}},
-                    likes: {
-                        where: {authorId: req.user.id},
-                        select: {
-                            author: {select: {id: true, username: true}}
-                        }
-                    },
-                    comments: {
-                        select: {
-                            author: {select: {id: true, username: true}},
-                            content: true,
-                            createdAt: true,
-                            id: true
-                        }
-                    },
-                    _count: {select: {likes: true, comments: true}}
-                }
+                comments: {
+                    select: {
+                        author: {select: {id: true, username: true}},
+                        content: true,
+                        createdAt: true,
+                        id: true
+                    }
+                },
+                _count: {select: {likes: true, comments: true}}
+            }
         });
         const postsArr = posts.map(post => {
             return {
@@ -59,8 +59,34 @@ router.post('/', async (req, res, next) => {
                 content: req.body.content.trim(),
                 authorId: req.user.id,
             },
+            select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                author: {select: { id: true, username: true}},
+                likes: {
+                    where: {authorId: req.user.id},
+                    select: {
+                        author: {select: {id: true, username: true}}
+                    }
+                },
+                comments: {
+                    select: {
+                        author: {select: {id: true, username: true}},
+                        content: true,
+                        createdAt: true,
+                        id: true
+                    }
+                },
+                _count: {select: {likes: true, comments: true}}
+            }
         });
-        res.json(post);
+        const liked = post.likes.length > 0;
+        const {likes, ...rest} = post;
+        res.status(201).json({
+            ...rest,
+            liked: liked,
+        });
     } catch (err)  {
         console.log(err);
         next(err);

@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useEffect} from 'react';
 import {useParams} from 'react-router';
+import {useNavigate} from 'react-router';
 import {useAuth} from '../../context/useAuth';
 import Post from '../post/Post';
 import styles from './User.module.css';
@@ -8,6 +9,7 @@ import styles from './User.module.css';
 function User() {
     const [user, setUser] = useState(null);
     const [followed, setFollowed] = useState(false);
+    const navigate = useNavigate();
     const {user: currentUser} = useAuth();
     let {username} = useParams();
 
@@ -65,6 +67,24 @@ function User() {
         }
     }
 
+    async function handleMessage() {
+        try {
+            const res = await fetch('/api/conversations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ username: user.username }),
+            });
+            if (!res.ok) {
+                return;
+            }
+            const conversation = await res.json();
+            navigate(`/messages/${conversation.id}`);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     useEffect(() => {fetchUser()},[username, currentUser]);
 
     return (
@@ -85,7 +105,10 @@ function User() {
                             <p>{user._count.following}</p>
                         </div>
                     </div>
-                    {(user.username !== currentUser.username) && <button className={`${styles.button} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? `Unfollow ${user.username}` : `Follow ${user.username}`}</button>}
+                    {(user.username !== currentUser.username) && <div className={styles.buttons}>
+                        <button className={styles.messagebutton} onClick={handleMessage}>Message</button>
+                        <button className={`${styles.followbutton} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? `Unfollow ${user.username}` : `Follow ${user.username}`}</button>
+                    </div>}
                     <ul className={styles.list}>
                         {user.posts.map(post => <li key={post.id}><Post post={post}/></li>)}
                     </ul>
