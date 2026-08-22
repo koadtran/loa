@@ -23,6 +23,8 @@ function Messages() {
             setConversations(await res.json());
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -49,7 +51,8 @@ function Messages() {
     return (
         <div className={styles.container}>
             <div className={styles.chatlist}>
-                <ChatList conversations={conversations} />
+                {loading && <p className={styles.loading}>Loading…</p>}
+                {!loading && <ChatList conversations={conversations} />}
             </div>
             <div className={styles.chat}>
                 <Outlet context={{onNewMessage: handleNewMessage, conversations}}/>
