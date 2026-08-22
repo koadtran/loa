@@ -1,5 +1,8 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
+const {Server} = require('socket.io');
+const {setIO} = require('./socket/io')
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -20,23 +23,23 @@ app.set('trust proxy', 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(
-    session({
-        store: new pgSession({
-            conString: process.env.DATABASE_URL,
-            createTableIfMissing: true,
-        }),
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            secure: process.env.NODE_ENV === 'production',
-            httpOnly: true,
-            sameSite: 'lax',
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-        },
-    })
-);
+const sessionMiddleware = session({
+    store: new pgSession({
+        conString: process.env.DATABASE_URL,
+        createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+});
+
+app.use(sessionMiddleware);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -67,6 +70,53 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+const io = new Server(server);
+setIO(io);
+
+io.engine.use(sessionMiddleware);
+
+io.use((socket, next) => {
+    const req = socket.request;
+    passport.initialize()(req, {}, () => {
+        passport.session()(req, {}, () => {
+            if (req.user) {
+                socket.user = req.user;
+                next();
+            } else {
+                next(new Error('Unauthorized'));
+            }
+        });
+    });
+});
+
+io.on('connection', (socket) => {
+  console.log('connected auth:', socket.user.username);
+  socket.on('join-conversation', async (conversationId) => {
+    try {
+        const participant = await prisma.conversationParticipant.findUnique({
+            where: {
+                userId_conversationId: {
+                    userId: socket.user.id,
+                    conversationId: parseInt(conversationId)
+                }
+            }
+        });
+
+        if (!participant) {
+            console.log(`${socket.user.username} was denied joining conversation-${conversationId}`);
+            return;
+        }
+        socket.join(`conversation-${conversationId}`);
+        console.log(`${socket.user.username} joined conversation-${conversationId}`);
+    } catch (err) {
+        console.log(err);
+    }
+  });
+});
+
+
+server.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
+

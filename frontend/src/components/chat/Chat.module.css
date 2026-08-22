@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: var(--color-surface);
 }
 
 .messageList {
@@ -42,7 +43,7 @@
 }
 
 .other .bubble {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg); 
     border: 1px solid var(--color-border);
     color: var(--color-text);
     border-bottom-left-radius: var(--radius-sm);
@@ -66,6 +67,7 @@
     align-items: flex-end;
     padding: var(--space-3) var(--space-4);
     border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
 }
 
 .input {
@@ -112,4 +114,19 @@
 
 .hideScrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    flex-shrink: 0;
+}
+
+.header .name {
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
 }

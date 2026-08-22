@@ -7,7 +7,7 @@ import styles from './Feed.module.css';
 
 export default function Feed() {
     const [posts, setPosts] = useState(null);
-    const [newPost, setNewPost] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     async function fetchPosts() {
@@ -22,11 +22,11 @@ export default function Feed() {
                 return;
             }
             const postsArr = await res.json();
-            console.log(postsArr);
-            setNewPost(false);
             setPosts(postsArr);
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -34,10 +34,17 @@ export default function Feed() {
 
     return (
         <div className={`${styles.container} ${styles.hideScrollbar}`}>    
-            {posts && <ul className={styles.list}>
-                <NewPost setPosts={setPosts} />
-                {posts.map(post => <li key={post.id}><Post post={post}/></li>)}
-            </ul>}
+            {loading && <p className={styles.loading}>Loading…</p>}
+            {!loading && posts && (
+                <ul className={styles.list}>
+                    <NewPost setPosts={setPosts} />
+                    {posts.length === 0 ? (
+                        <li className={styles.empty}>No posts yet. Follow some people, or write the first one!</li>
+                    ) : (
+                        posts.map(post => <li key={post.id}><Post post={post} /></li>)
+                    )}
+                </ul>
+            )}
         </div>
     )
 }

@@ -1,6 +1,7 @@
 const express= require('express');
 const prisma = require('../prisma/prisma');
 const requireAuth = require('../middleware/requireAuth');
+const {getIO} = require('../socket/io');
 
 const router = express.Router();
 
@@ -40,7 +41,14 @@ router.get('/', async (req, res, next) => {
                 }
             }
         })
-        res.json(conversations);
+
+        res.json(
+            conversations.sort((a, b) => {
+                const aTime = new Date(a.messages[0]?.createdAt ?? a.createdAt);
+                const bTime = new Date(b.messages[0]?.createdAt ?? b.createdAt);
+                return bTime - aTime;
+            })
+        );
     } catch (err) {
         console.log(err);
         next(err);
@@ -170,6 +178,10 @@ router.post('/:id/messages', async (req, res, next) => {
                 sender: {select: {id: true, username: true}}
             }
         });
+        getIO().to(`conversation-${conversationId}`).emit('new-message', {
+            ...message,
+            conversationId
+        }); 
         res.status(201).json(message);
     } catch (err) {
         console.log(err);

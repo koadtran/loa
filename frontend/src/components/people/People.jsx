@@ -6,6 +6,8 @@ import styles from './People.module.css';
 
 function People() {
     const [people, setPeople] = useState(null);
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
     const {user} = useAuth();
     const currentUsername = user?.username;
 
@@ -26,19 +28,37 @@ function People() {
             setPeople(await res.json());
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {fetchPeople()},[]);
 
+    const filteredPeople = people
+        ?.filter(person => person.username !== currentUsername)
+        .filter(person => person.username.includes(search.trim().toLocaleLowerCase()));
+
     return (
         <div className={`${styles.container} ${styles.hideScrollbar}`}>
-            {people && <>
+            
+            <input type="text" className={styles.search} value={search} onChange={e => setSearch(e.target.value)} placeholder="Search people…"/>
+
+            {loading && <p className={styles.loading}>Loading…</p>}
+            
+            {!loading && people && (
+                <>
                     <ul className={styles.list}>
-                        {people.filter(person => person.username !== currentUsername).map(person => <li key={person.id}><UserCard user={person} handleFollowChange={handleFollowChange} /></li> )}
+                        {filteredPeople.map(person => (
+                            <li key={person.id}><UserCard user={person} handleFollowChange={handleFollowChange} /></li>
+                        ))}
                     </ul>
+
+                    {filteredPeople.length === 0 && (
+                        <p className={styles.empty}>No one matches "{search}"</p>
+                    )}
                 </>
-            }
+            )}
         </div>
     )
 }
