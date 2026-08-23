@@ -22,7 +22,7 @@ Try it without signing up: username `testuser`, password `password123`.
 - **Frontend:** React (Vite), CSS Modules, React Router
 - **Backend:** Express, Passport.js, Socket.IO
 - **Database:** PostgreSQL + Prisma
-- **Deployment:** Render (single same-origin service serving both the API and the built frontend)
+- **Deployment:** Render (serving both the API and the built frontend)
 
 ## Architecture notes
 
