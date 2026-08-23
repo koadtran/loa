@@ -35,5 +35,4 @@ Try it without signing up: username `testuser`, password `password123`.
 1. Clone the repo, run `npm install` at the root, in `frontend/`, and in `server/`.
 2. Copy `server/.env.example` to `server/.env` and fill in `DATABASE_URL` and `SESSION_SECRET`.
 3. Create a local Postgres database, then run `cd server && npx prisma migrate dev`.
-4. (Optional) Seed sample data: `node server/prisma/seed.js`.
-5. From the project root: `npm run dev`.
+4. From the project root: `npm run dev`.
