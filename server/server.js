@@ -91,7 +91,6 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('connected auth:', socket.user.username);
   socket.on('join-conversation', async (conversationId) => {
     try {
         const participant = await prisma.conversationParticipant.findUnique({
