@@ -113,6 +113,8 @@ io.on('connection', (socket) => {
         console.log(err);
     }
   });
+
+  socket.join(`user-${socket.user.id}`);
 });
 
 

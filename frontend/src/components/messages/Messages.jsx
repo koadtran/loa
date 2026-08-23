@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import ChatList from '../chatlist/ChatList';
 import {Outlet} from 'react-router';
 import {useNavigate} from 'react-router';
+import {io} from 'socket.io-client';
 import styles from './Messages.module.css';
 
 function Messages() {
@@ -29,6 +30,44 @@ function Messages() {
     }
 
     useEffect(() => {fetchConversations()}, []);
+
+    useEffect(() => {
+        if (!conversations) return;
+
+        const socket = io();
+
+        conversations.forEach(conversation => {
+            socket.emit('join-conversation', conversation.id);
+        });
+
+        socket.on('new-conversation', (conversation) => {
+            socket.emit('join-conversation', conversation.id);
+            setConversations(prev => {
+                if (prev.some(c => c.id === conversation.id)) {
+                    return prev;
+                }
+                return [conversation, ...prev];
+            });
+        });
+
+        socket.on('new-message', (message) => {
+            setConversations(prev => {
+                let updated;
+                const filtered = prev.filter(conversation => {
+                    if (conversation.id !== message.conversationId) {
+                        return true;
+                    }
+                    updated = {...conversation, messages: [message]};
+                    return false;
+                });
+                return updated ? [updated, ...filtered] : prev;
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [conversations === null]);
 
     function handleNewMessage(conversationId, message) {
         setConversations(prev => {
