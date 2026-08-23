@@ -108,8 +108,8 @@ function User() {
                         </div>
                     </div>
                     {(user.username !== currentUser.username) && <div className={styles.buttons}>
-                        <button className={styles.messagebutton} onClick={handleMessage}>Message</button>
                         <button className={`${styles.followbutton} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? `Unfollow ${user.username}` : `Follow ${user.username}`}</button>
+                        <button className={styles.messagebutton} onClick={handleMessage}>Message</button>
                     </div>}
                     <ul className={styles.list}>
                         {user.posts.map(post => <li key={post.id}><Post post={post}/></li>)}

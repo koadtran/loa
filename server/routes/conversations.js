@@ -89,7 +89,7 @@ router.post('/', async (req, res, next) => {
             return res.json(existing);
         }
 
-        const conversations = await prisma.conversation.create({
+        const conversation = await prisma.conversation.create({
             data: {
                 participants: {
                     create: [
@@ -97,9 +97,29 @@ router.post('/', async (req, res, next) => {
                         {userId: req.user.id}
                     ]
                 }
+            },
+            select: {
+                id: true,
+                createdAt: true,
+                participants: {
+                    select: {user: {select: {id: true, username: true}}}
+                },
+                messages: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 1,
+                    select: {
+                        content: true,
+                        createdAt: true,
+                        sender: {select: {id: true, username: true}}
+                    }
+                }
             }
-        })
-        res.status(201).json(conversations);
+        });
+        getIO()
+            .to(`user-${req.user.id}`)
+            .to(`user-${otherPerson.id}`)
+            .emit('new-conversation', conversation);
+        res.status(201).json(conversation);
     } catch (err) {
         console.log(err);
         next(err);

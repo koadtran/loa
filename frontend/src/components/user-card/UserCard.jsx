@@ -40,12 +40,33 @@ function UserCard({user, handleFollowChange}) {
         }
     } 
 
-    const handleClick = followed ? handleUnfollow : handleFollow;
+    const handleFollowClick = followed ? handleUnfollow : handleFollow;
+
+    async function handleMessageClick() {
+        try {
+            const res = await fetch('/api/conversations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ username: user.username }),
+            });
+            if (!res.ok) {
+                return;
+            }
+            const conversation = await res.json();
+            navigate(`/messages/${conversation.id}`);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <div className={styles.userCard}>
             <p onClick={() => navigate(`/user/${user.username}`)}>{`@${user.username}`}</p>
-            <button className={`${styles.button} ${followed? styles.unfollow : ""}`} onClick={handleClick}>{followed ? 'Unfollow' : 'Follow'}</button>
+            <div>
+                <button className={`${styles.button} ${followed? styles.unfollow : ""}`} onClick={handleFollowClick}>{followed ? 'Unfollow' : 'Follow'}</button>
+                <button className={`${styles.messagebutton}`} onClick={handleMessageClick}>Message</button>
+            </div>
         </div>
     )
 }
