@@ -24,12 +24,6 @@ Try it without signing up: username `testuser`, password `password123`.
 - **Database:** PostgreSQL + Prisma
 - **Deployment:** Render (serving both the API and the built frontend)
 
-## Architecture notes
-
-- Sessions are stored in Postgres (`connect-pg-simple`), shared between the HTTP and WebSocket layers — Socket.IO connections are authenticated using the same session middleware as regular routes, so every socket connection is tied to a real logged-in user.
-- The follow system gates content server-side: a profile's posts are only included in the API response if the requesting user follows them (or is viewing their own profile) — never filtered client-side.
-- Real-time updates use per-conversation and per-user Socket.IO rooms, so a new conversation (and its first message) is pushed live to the recipient even before they've opened it.
-
 ## Screenshots
 
 | Feed | Profile | Messaging |
