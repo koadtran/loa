@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: loa
+      POSTGRES_PASSWORD: loa
+      POSTGRES_DB: loa
+    ports:
+      - "5432:5432"
+    volumes:
+      - loa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loa -d loa"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://loa:loa@db:5432/loa?schema=public
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-change-me}
+    ports:
+      - "3000:3000"
+
+volumes:
+  loa_pgdata:

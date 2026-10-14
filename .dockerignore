@@ -1,0 +1,38 @@
+# Dependencies — reinstalled inside the image
+**/node_modules
+
+# Build outputs — regenerated inside the image
+frontend/dist
+**/.vite
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# VCS + IDE
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+.DS_Store
+
+# Agent/tooling junk from .gitignore
+.claude
+.windsurf
+.agents
+skills-lock.json
+
+# Docker files themselves — no need in the context
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Docs + screenshots — not needed at runtime
+README.md
+**/README.md
+screenshots
+
+# Logs
+*.log
