@@ -18,3 +18,24 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Smoke test
+        run: |
+          docker compose up -d --build
+          sleep 10
+          curl -f http://localhost:3000/api/health
+          docker compose down -v
+
+                - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/koadtran/loa:latest,ghcr.io/koadtran/loa:${{ github.sha }}
